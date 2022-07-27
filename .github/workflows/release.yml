@@ -36,4 +36,4 @@ jobs:
       - name: V1タグを更新
         run: |
           git tag v1
-          git push origin releases/v1
+          git push origin v1
