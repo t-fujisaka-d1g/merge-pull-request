@@ -7,6 +7,10 @@ async function run(): Promise<void> {
     const pullNumber: string = core.getInput('pull-number')
     core.debug(`pullNumber: ${pullNumber}`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
 
+    core.debug('======================== context ========================')
+    core.debug(`${JSON.stringify(github.context, null, '  ')}`)
+    core.debug('=========================================================')
+    
     const octokit = github.getOctokit(token)
 
     // コメントを書き込む
