@@ -35,5 +35,6 @@ jobs:
           fi
       - name: V1タグを更新
         run: |
+          git push -d origin v1
           git tag v1
           git push origin v1
