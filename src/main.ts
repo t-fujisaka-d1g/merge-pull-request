@@ -13,6 +13,13 @@ async function run(): Promise<void> {
     const mergeMethod = getMergeMethod()
     const pullRequest = github.context.payload.pull_request
 
+    core.debug(`mergeMethod: ${mergeMethod}`)
+    core.debug('======================== pullRequest ========================')
+    core.debug(`${JSON.stringify(pullRequest, null, '    ')}`)
+    core.debug('======================== context ========================')
+    core.debug(`${JSON.stringify(github.context, null, '    ')}`)
+    core.debug('=========================================================')
+
     if (mergeMethod === null) {
       core.setFailed(
         'ERROR: マージ方法(merge-method)には merge,squash,rebaseのいずれかを指定してください。'
@@ -31,10 +38,6 @@ async function run(): Promise<void> {
       core.info('スキップ: Reviewersが指定されているため')
       return
     }
-
-    core.debug('======================== context ========================')
-    core.debug(`${JSON.stringify(github.context, null, '  ')}`)
-    core.debug('=========================================================')
 
     const octokit = github.getOctokit(token)
 
