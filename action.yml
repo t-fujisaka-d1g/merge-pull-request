@@ -2,10 +2,13 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  milliseconds: # change this
+  github-token:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'GITHUB_TOKEN'
+  merge-method:
+    required: false
+    description: 'マージ方法(merge,squash,rebase)'
+    default: 'merge'
 runs:
   using: 'node16'
   main: 'dist/index.js'
