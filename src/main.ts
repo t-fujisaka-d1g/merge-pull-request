@@ -20,37 +20,52 @@ async function run(): Promise<void> {
     core.debug(`${JSON.stringify(github.context, null, '    ')}`)
     core.debug('=========================================================')
 
-    if (mergeMethod === null) {
-      core.setFailed(
-        'ERROR: マージ方法(merge-method)には merge,squash,rebaseのいずれかを指定してください。'
-      )
-      return
-    }
+    // アクションの実行イベントを検証
     if (!pullRequest) {
       core.setFailed('ERROR: プルリクエストのイベントから実行してください。')
-      return
-    }
-    if (pullRequest.assignees.length > 0) {
-      core.info('スキップ: Assigneesが指定されているため')
-      return
-    }
-    if (pullRequest.requested_reviewers.length > 0) {
-      core.info('スキップ: Reviewersが指定されているため')
       return
     }
 
     const octokit = github.getOctokit(token)
 
-    // コメントを書き込む
-    const result = await octokit.rest.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: pullRequest.number,
-      body: `書き込みテスト(${mergeMethod})`
-    })
+    // プルリクエストにコメントを書き込む
+    const comment = async (message: string): Promise<void> => {
+      const result = await octokit.rest.issues.createComment({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: pullRequest.number,
+        body: message
+      })
+      core.debug(`result: ${JSON.stringify(result, null, '    ')}`)
+    }
 
-    core.debug(`result: ${JSON.stringify(result, null, '  ')}`)
+    // マージ方法を検証
+    if (mergeMethod === null) {
+      const errors: string[] = []
+      errors.push(
+        'マージ方法(merge-method)には merge,squash,rebaseのいずれかを指定してください。'
+      )
+      const message = `ERROR: \n${errors.join('\n')}`
+      await comment(message)
+      core.setFailed(message)
+      return
+    }
 
+    // マージをスキップするか判定
+    const skips: string[] = []
+    if (pullRequest.assignees.length > 0) {
+      skips.push('Assigneesが指定されているため')
+    }
+    if (pullRequest.requested_reviewers.length > 0) {
+      skips.push('Reviewersが指定されているため')
+    }
+    if (skips.length > 0) {
+      const message = `SKIP: \n${skips.join('\n')}`
+      await comment(message)
+    }
+
+    // プルリクエストをマージ
+    await comment(`プルリクエストをマージします\nマージ方法: ${mergeMethod}`)
     octokit.rest.pulls.merge({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
