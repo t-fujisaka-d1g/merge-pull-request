@@ -45,7 +45,7 @@ async function run(): Promise<void> {
       errors.push(
         'マージ方法(merge-method)には merge,squash,rebaseのいずれかを指定してください。'
       )
-      const message = `ERROR: \n${errors.join('\n')}`
+      const message = `merge-pull-request: ERROR \n${errors.join('\n')}`
       await comment(message)
       core.setFailed(message)
       return
@@ -60,12 +60,12 @@ async function run(): Promise<void> {
       skips.push('Reviewersが指定されているため')
     }
     if (skips.length > 0) {
-      const message = `SKIP: \n${skips.join('\n')}`
+      const message = `merge-pull-request: SKIP \n${skips.join('\n')}`
       await comment(message)
     }
 
     // プルリクエストをマージ
-    await comment(`プルリクエストをマージします\nマージ方法: ${mergeMethod}`)
+    await comment(`merge-pull-request: ${mergeMethod}`)
     octokit.rest.pulls.merge({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
