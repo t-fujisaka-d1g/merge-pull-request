@@ -14,12 +14,13 @@ async function run(): Promise<void> {
     const pullRequest = github.context.payload.pull_request
 
     if (mergeMethod === null) {
-      core.setFailed('E0001')
+      core.setFailed(
+        'ERROR: マージ方法(merge-method)には merge,squash,rebaseのいずれかを指定してください。'
+      )
       return
     }
     if (!pullRequest) {
-      // プルリクエスト以外のイベントで実行された場合は終了
-      core.setFailed('E0002')
+      core.setFailed('ERROR: プルリクエストのイベントから実行してください。')
       return
     }
 
