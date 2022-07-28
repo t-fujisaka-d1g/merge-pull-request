@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {isMergeMethod, MergeMethod} from './models'
+import {isMergeMethod} from './models'
+import type {MergeMethod} from './models'
 
 const getMergeMethod = (): MergeMethod | null => {
   const value = core.getInput('merge-method')
