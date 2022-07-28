@@ -23,8 +23,12 @@ async function run(): Promise<void> {
       core.setFailed('ERROR: プルリクエストのイベントから実行してください。')
       return
     }
+    if (pullRequest.assignees.length > 0) {
+      core.info('スキップ: Assigneesが指定されているため')
+      return
+    }
     if (pullRequest.requested_reviewers.length > 0) {
-      core.info('レビュアーが指定されているため、マージをスキップしました。')
+      core.info('スキップ: Reviewersが指定されているため')
       return
     }
 
@@ -43,6 +47,13 @@ async function run(): Promise<void> {
     })
 
     core.debug(`result: ${JSON.stringify(result, null, '  ')}`)
+
+    octokit.rest.pulls.merge({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      pull_number: pullRequest.number,
+      merge_method: mergeMethod
+    })
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
