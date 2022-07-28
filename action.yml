@@ -5,6 +5,10 @@ inputs:
   github-token:
     required: true
     description: 'GITHUB_TOKEN'
+  merge-method:
+    required: false
+    description: 'マージ方法(merge,squash,rebase)'
+    default: 'merge'
 runs:
   using: 'node16'
   main: 'dist/index.js'
