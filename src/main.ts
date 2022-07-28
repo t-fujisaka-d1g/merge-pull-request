@@ -23,6 +23,10 @@ async function run(): Promise<void> {
       core.setFailed('ERROR: プルリクエストのイベントから実行してください。')
       return
     }
+    if (pullRequest.requested_reviewers.length > 0) {
+      core.info('レビュアーが指定されているため、マージをスキップしました。')
+      return
+    }
 
     core.debug('======================== context ========================')
     core.debug(`${JSON.stringify(github.context, null, '  ')}`)
