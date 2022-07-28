@@ -62,6 +62,7 @@ async function run(): Promise<void> {
     if (skips.length > 0) {
       const message = `merge-pull-request: SKIP \n${skips.join('\n')}`
       await comment(message)
+      return
     }
 
     // プルリクエストをマージ
